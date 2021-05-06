@@ -73,10 +73,7 @@ module.exports.findOne = async (data) => {
 module.exports.find = async (data) => {
     const response = { status: 500 };
     try {
-        const doc = await data.model.find(
-            data.findQuery,
-            data.projection
-            ).skip(data.skip).limit(data.limit);
+        const doc = await data.model.find(data.projection);
         if (doc) {
             response.status = 200;
             response.result = doc;
