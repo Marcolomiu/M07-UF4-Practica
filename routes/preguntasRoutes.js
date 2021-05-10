@@ -6,9 +6,16 @@ const joiSchemaValidation = require('../middlewares/joiSchemaValidation');
 const preguntasSchemas = require('../models/joi/preguntasSchemas');
 const tokenValidation = require('../middlewares/tokenValidation');
 
+router.get('/',
+    tokenValidation.validate,
+    joiSchemaValidation.validate(preguntasSchemas.getAll, 'query'),
+    preguntasController.getAll
+);
+
 router.post('/create',
-    joiSchemaValidation.validate(preguntasSchemas.create, `body`),
-    preguntasController.create //Aquí podria utilitzar un altre controller pero així tinc els exercicis agrupats
+    tokenValidation.validate,
+    joiSchemaValidation.validate(preguntasSchemas.create, 'body'),
+    preguntasController.create
 );
 
 router.put('/update/:id',
@@ -18,12 +25,14 @@ router.put('/update/:id',
     preguntasController.update
 );
 
-router.delete('/delete/:id', 
+router.delete('/delete/:id',
+    tokenValidation.validate,
     joiSchemaValidation.validate(preguntasSchemas.id, 'params'),
     preguntasController.delete
 );
 
-router.get('/get/:id', 
+router.get('/get/:id',
+    tokenValidation.validate,
     joiSchemaValidation.validate(preguntasSchemas.id, 'params'),
     preguntasController.getById
 );

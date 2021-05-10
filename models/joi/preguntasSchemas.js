@@ -3,6 +3,10 @@ Joi.objectId = require('joi-objectid')(Joi)
 
 module.exports = {
 
+    getAll: Joi.object({
+        page: Joi.number().integer().min(1).max(2)
+    }),
+
     id: Joi.object({
         id: Joi.objectId(),
     }),
