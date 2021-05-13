@@ -137,7 +137,7 @@ module.exports.findOne = async (data) => {
         }
     } catch (error) {
         response.error = error;
-        console.log(ERROR-crudRepository-findOne: ${error});
+        console.log(`ERROR-crudRepository-findOne: ${error}`);
     }
     return response;
 };
