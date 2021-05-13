@@ -38,6 +38,7 @@ router.get('/get/:id',
 );
 
 router.get('/getSpecific',
+    tokenValidation.validate,
     joiSchemaValidation.validate(preguntasSchemas.findSpecific, 'query'),
     preguntasController.findSpecific
 );
