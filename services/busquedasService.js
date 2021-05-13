@@ -9,7 +9,6 @@ module.exports.create = async (dataFromController) => {
     const responseObj = { status: false };
     try {
         const busqueda = new Busqueda(dataFromController);
-        console.log(dataFromController);
         const responseFromRepository = await crudRepository.save(busqueda);
         if (responseFromRepository.status) {
             responseObj.result = responseFromRepository.result;
