@@ -6,6 +6,32 @@ const mongoose = require('mongoose');
 
 module.exports = {
 
+    getAll: async (dataFromController) => {
+        const response = { status: false };
+        try {
+            const data = {
+                findQuery: {},
+                model: Pregunta,
+                projection: { __v: false }
+            };
+
+            if (dataFromController.skip && dataFromController.limit) {
+                data.skip = dataFromController.skip;
+                data.limit = dataFromController.limit;
+            }
+
+            const responseFromDB = await crudRepository.find(data);
+            if (responseFromDB.status === 200) {
+                response.result = responseFromDB.result;
+            }
+            response.status = responseFromDB.status;
+        } catch (error) {
+            response.error = error;
+            console.log(`ERROR-preguntasService-getAll: ${error}`);
+        }
+        return response;
+    },
+
     create: async (dataFromController) => {
         const response = { status: false };
         try {
@@ -35,11 +61,13 @@ module.exports = {
                 projection: { __v: false },
                 updateQuery: {}
             };
-            if (dataFromController.title) data.updateQuery.title = dataFromController.title;
-            if (dataFromController.sinopsis) data.updateQuery.sinopsis = dataFromController.sinopsis;
-            if (dataFromController.director) data.updateQuery.director = dataFromController.director;
-            if (dataFromController.releasedDate) data.updateQuery.releasedDate = dataFromController.releasedDate;
-            if (dataFromController.actors) data.updateQuery.actors = dataFromController.actors;
+            if (dataFromController.question) data.updateQuery.question = dataFromController.question;
+            if (dataFromController.category) data.updateQuery.category = dataFromController.category;
+            if (dataFromController.difficulty) data.updateQuery.difficulty = dataFromController.difficulty;
+            if (dataFromController.type) data.updateQuery.type = dataFromController.type;
+            if (dataFromController.correct_answer) data.updateQuery.correct_answer = dataFromController.correct_answer;
+            if (dataFromController.incorrect_answers) data.updateQuery.incorrect_answers = dataFromController.incorrect_answers;
+            if (dataFromController.busqueda_id) data.updateQuery.busqueda_id = dataFromController.busqueda_id;
 
             const responseFromDB = await crudRepository.findOneAndUpdate(data);
             if (responseFromDB.status === 200) {
@@ -87,7 +115,7 @@ module.exports = {
                 projection: { __v: false },
             };
 
-            const responseFromDB = await crudRepository.findOne(data);
+            const responseFromDB = await crudRepository.findById(data);
             if (responseFromDB.status === 200) {
                 response.result = responseFromDB.result;
             }
@@ -99,28 +127,23 @@ module.exports = {
         return response;
     },
 
-    findAll: async (dataFromController) => {
+    findSpecific: async (dataFromController) => {
         const response = { status: false };
         try {
             const data = {
-                findQuery: {},
+                findQuery: dataFromController,
                 model: Pregunta,
-                projection: { __v: false },
+                projection: { __v: false }
             };
 
-            if(dataFromController.skip && dataFromController.limit) {
-                data.skip = dataFromController.skip;
-                data.limit = dataFromController.limit;
-            }
-
-            const responseFromDB = await crudRepository.findAll(data);
+            const responseFromDB = await crudRepository.findSpecific(data);
             if (responseFromDB.status === 200) {
                 response.result = responseFromDB.result;
             }
             response.status = responseFromDB.status;
         } catch (error) {
             response.error = error;
-            console.log(`ERROR-preguntasService-findAll: ${error}`);
+            console.log(`ERROR-preguntasService-findSpecific: ${error}`);
         }
         return response;
     }

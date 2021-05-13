@@ -10,4 +10,9 @@ router.post('/login',
     authController.login
 );
 
+router.post('/register',
+    joiSchemaValidation.validate(authSchemas.register, 'body'),
+    authController.register
+);
+
 module.exports = router;

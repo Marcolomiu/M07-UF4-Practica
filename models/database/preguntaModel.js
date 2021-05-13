@@ -5,9 +5,9 @@ const preguntaSchema = mongoose.Schema({
     category: String,
     difficulty: String,
     type: String,
-    correct_anwwer: String,
+    correct_answer: String,
     incorrect_answers: [{ type: String}],
     busqueda_id: String,
 });
 
-module.exports = mongoose.model(`Pregunta`, preguntaSchema);
+module.exports = mongoose.model(`Preguntas`, preguntaSchema);

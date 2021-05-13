@@ -34,4 +34,10 @@ module.exports = {
         ),
         busqueda_id: Joi.string().optional()
     }),
+
+    findSpecific: Joi.object({
+        category: Joi.string().optional(),
+        type: Joi.string().optional(),
+        difficulty: Joi.string().optional()
+    })
 }

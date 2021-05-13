@@ -50,10 +50,29 @@ module.exports.findOneAndDelete = async (data) => {
     return response;
 };
 
-module.exports.findOne = async (data) => {
+module.exports.findById = async (data) => {
     const response = { status: 500 };
     try {
-        const doc = await data.model.findOne(
+        const doc = await data.model.findById(
+            data.findQuery,
+            data.projection);
+        if (doc) {
+            response.status = 200;
+            response.result = doc;
+        } else {
+            response.status = 404;
+        }
+    } catch (error) {
+        response.error = error;
+        console.log(`ERROR-crudRepository-findById: ${error}`);
+    }
+    return response;
+};
+
+module.exports.findSpecific = async (data) => {
+    const response = { status: 500 };
+    try {
+        const doc = await data.model.find(
             data.findQuery,
             data.projection
             )
@@ -65,7 +84,7 @@ module.exports.findOne = async (data) => {
         }
     } catch (error) {
         response.error = error;
-        console.log(`ERROR-crudRepository-findOneAndDelete: ${error}`);
+        console.log(`ERROR-crudRepository-findSpecific: ${error}`);
     }
     return response;
 };
@@ -82,7 +101,7 @@ module.exports.find = async (data) => {
         }
     } catch (error) {
         response.error = error;
-        console.log(`ERROR-crudRepository-findOneAndDelete: ${error}`);
+        console.log(`ERROR-crudRepository-find: ${error}`);
     }
     return response;
 };
