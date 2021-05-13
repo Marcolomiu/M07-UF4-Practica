@@ -105,3 +105,39 @@ module.exports.find = async (data) => {
     }
     return response;
 };
+
+module.exports.findBetween = async (data) => {
+    const response = { status: 500 };
+    try {
+        const doc = await data.model.find({date: {$gte: data.dates.start, $lte: data.dates.end}}, data.projection);
+        if (doc) {
+            response.status = 200;
+            response.result = doc;
+        } else {
+            response.status = 404;
+        }
+    } catch (error) {
+        response.error = error;
+        console.log(`ERROR-crudRepository-findBetween: ${error}`);
+    }
+    return response;
+};
+
+module.exports.findOne = async (data) => {
+    const response = { status: 500 };
+    try {
+        const doc = await data.model.findOne(
+            data.findQuery,
+            data.projection);
+        if (doc) {
+            response.status = 200;
+            response.result = doc;
+        } else {
+            response.status = 404;
+        }
+    } catch (error) {
+        response.error = error;
+        console.log(ERROR-crudRepository-findOne: ${error});
+    }
+    return response;
+};
