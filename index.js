@@ -12,7 +12,7 @@ connect.createConnection();
 
 app.use('/api/v1/pregunta', require('./routes/preguntasRoutes'));
 app.use('/api/v1/auth', require('./routes/authRoutes'));
-//app.use('/api/v1/busqueda', require('./routes/busquedasRoutes'));
+app.use('/api/v1/busqueda', require('./routes/busquedasRoutes'));
 
 app.listen(process.env.PORT, function() {
     console.log('Port listening: ' + process.env.PORT);

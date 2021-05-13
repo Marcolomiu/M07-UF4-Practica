@@ -3,6 +3,7 @@ const crudRepository = require('../database/crudRepository');
 const Busqueda = require('../models/database/busquedaModel');
 const Pregunta = require('../models/database/preguntaModel');
 const mongoose = require('mongoose');
+const jwt = require(`jsonwebtoken`);
 
 module.exports.create = async (dataFromController) => {
     const responseObj = { status: false };
@@ -133,7 +134,7 @@ module.exports.between = async (dates) => {
     return response;
 }
 
-module.exports.question = async (dataFromController) => {
+module.exports.question = async (dataFromController, token) => {
     const responseObj = { status: false };
     try {
         const responseFromApi = await axios({
@@ -143,25 +144,52 @@ module.exports.question = async (dataFromController) => {
                 'Content-Type': 'application/json'
             }
         });
-        const today = new Date();
-        const busqueda = new Busqueda(today, "606f35b97d52f40c94e065cd");
-        const responseFromRepository = await crudRepository.save(busqueda);
-        const data = await responseFromApi.data.results;
-        data.forEach(element => {
-            const pregunta = new Pregunta({
-                question: element.question,
-                category: element.category,
-                difficulty: element.difficulty,
-                type: element.type,
-                correct_answer: element.correct_answer,
-                incorrect_answer: element.incorrect_answer,
-                busqueda_id: busqueda._id,
+        const now = new Date();
+        if (!token) {
+            const busqueda = new Busqueda({
+                date: now
             });
-            crudRepository.save(pregunta);
-        });
-        if (responseFromRepository.status) {
-            responseObj.result = responseFromRepository.result;
+            const responseFromRepository = await crudRepository.save(busqueda);
+            const data = await responseFromApi.data.results;
+            const result = [];
+            result.push(responseFromRepository.result);
+            data.forEach(element => {
+                const pregunta = new Pregunta({
+                    question: element.question,
+                    category: element.category,
+                    difficulty: element.difficulty,
+                    type: element.type,
+                    correct_answer: element.correct_answer,
+                    incorrect_answer: element.incorrect_answer,
+                    busqueda_id: busqueda._id,
+                });
+                result.push(pregunta);
+            });
+            responseObj.result = result;
             responseObj.status = true;
+        } else {
+            const busqueda = new Busqueda({
+                date: now,
+                userId: token.userId
+            });
+            const responseFromRepository = await crudRepository.save(busqueda);
+            const data = await responseFromApi.data.results;
+            data.forEach(element => {
+                const pregunta = new Pregunta({
+                    question: element.question,
+                    category: element.category,
+                    difficulty: element.difficulty,
+                    type: element.type,
+                    correct_answer: element.correct_answer,
+                    incorrect_answer: element.incorrect_answer,
+                    busqueda_id: busqueda._id,
+                });
+                crudRepository.save(pregunta);
+            });
+            if (responseFromRepository.status) {
+                responseObj.result = responseFromRepository.result;
+                responseObj.status = true;
+            }
         }
     } catch (error) {
         responseObj.error = error;

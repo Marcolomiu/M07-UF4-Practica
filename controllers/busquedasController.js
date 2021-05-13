@@ -138,7 +138,7 @@ module.exports.question = async (req, res) => {
         if (req.query.category == undefined) data.category = "";
         if (req.query.difficulty == undefined) data.difficulty = "";
         if (req.query.type == undefined) data.type = "";
-        const responseFromService = await busquedaService.question(data);
+        const responseFromService = await busquedaService.question(data, req.token);
         if (responseFromService.status) {
             responseObj.body = responseFromService.result;
             responseObj.message = `Busqueda created successfully`;
